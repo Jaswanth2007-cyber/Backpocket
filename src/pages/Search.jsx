@@ -9,7 +9,6 @@ import {
   Inbox,
   ArrowRight,
   Image as ImageIcon,
-  Sparkles,
 } from 'lucide-react';
 import { api } from '../services/api';
 import CategoryBadge from '../components/CategoryBadge';
@@ -134,11 +133,15 @@ export default function Search() {
       <div className="card bg-base-100 border border-base-200 shadow-sm p-4 sm:p-5 space-y-4">
         {/* Search input with clear button */}
         <div className="relative">
+          <label htmlFor="searchInput" className="sr-only">
+            Search items by description or location
+          </label>
           <SearchIcon
             size={18}
             className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base-content/40 pointer-events-none"
           />
           <input
+            id="searchInput"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -267,6 +270,7 @@ export default function Search() {
                 key={item.id}
                 role="button"
                 tabIndex={0}
+                aria-label={`View details for ${item.category || 'item'}: ${item.description.slice(0, 50)} found at ${item.location}`}
                 onClick={() => navigate(`/item/${item.id}`)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
@@ -308,6 +312,7 @@ export default function Search() {
 
                     <p
                       className="text-sm font-semibold text-base-content group-hover:text-primary transition-colors leading-snug break-words"
+                      dir="auto"
                       title={item.description}
                     >
                       {previewText}
@@ -315,7 +320,7 @@ export default function Search() {
                   </div>
 
                   <div className="flex flex-col gap-1 pt-1 text-xs text-base-content/60">
-                    <span className="flex items-center gap-1 truncate">
+                    <span className="flex items-center gap-1 truncate" dir="auto">
                       <MapPin size={12} className="shrink-0 text-primary" />
                       <span className="truncate">{item.location}</span>
                     </span>

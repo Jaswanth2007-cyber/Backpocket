@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Shield, Search, LogOut, Compass } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const { isAuthenticated, logout } = useAuth();
@@ -61,6 +62,9 @@ export default function Navbar() {
               <span>Staff Login</span>
             </Link>
           )}
+
+          {/* Theme Mode Toggle (Sun/Moon) */}
+          <ThemeToggle />
         </nav>
       </div>
     </header>

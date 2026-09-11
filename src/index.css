@@ -1,3 +1,5 @@
+@import './styles/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,6 +25,6 @@
 
 /* Base focus styles & smooth scrolling */
 :focus-visible {
-  outline: 2px solid theme('colors.campus.600');
+  outline: 2px solid var(--color-border-focus, #3b82f6);
   outline-offset: 2px;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import CollegeWatermark from './components/CollegeWatermark';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -14,8 +15,9 @@ import ItemDetail from './pages/ItemDetail';
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <div className="relative min-h-screen flex flex-col bg-base-200/50 text-base-content font-sans antialiased selection:bg-primary/20 selection:text-primary">
+      <ThemeProvider>
+        <AuthProvider>
+          <div className="relative min-h-screen flex flex-col bg-base-200/50 text-base-content font-sans antialiased selection:bg-primary/20 selection:text-primary">
           {/* Subtle collegiate watermark background element */}
           <CollegeWatermark />
 
@@ -50,8 +52,9 @@ export default function App() {
           <footer className="relative z-10 border-t border-base-200 bg-base-100/80 py-4 text-center text-xs text-base-content/50">
             <p>Campus Lost &amp; Found System • Central Student Office</p>
           </footer>
-        </div>
-      </AuthProvider>
+          </div>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

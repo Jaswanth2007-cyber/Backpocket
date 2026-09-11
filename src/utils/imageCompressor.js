@@ -5,18 +5,35 @@
  */
 export async function compressImage(file, maxDimension = 1000, quality = 0.75) {
   return new Promise((resolve, reject) => {
-    if (!file || !file.type.startsWith('image/')) {
-      return reject(new Error('Selected file is not an image'));
+    if (!file) {
+      return reject(new Error('No file selected'));
+    }
+
+    if (file.size === 0) {
+      return reject(new Error('The selected image file is empty (0 bytes).'));
+    }
+
+    if (!file.type || !file.type.startsWith('image/')) {
+      return reject(new Error('The selected file is not an image.'));
     }
 
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Failed to read image file'));
     reader.onload = (e) => {
       const img = new Image();
-      img.onerror = () => reject(new Error('Failed to load image element'));
+      img.onerror = () =>
+        reject(
+          new Error(
+            'The file could not be decoded as a valid image (it may be corrupted or a renamed non-image file).'
+          )
+        );
       img.onload = () => {
         let width = img.width;
         let height = img.height;
+
+        if (!width || !height) {
+          return reject(new Error('The image has invalid dimensions or could not be decoded.'));
+        }
 
         if (width > height) {
           if (width > maxDimension) {

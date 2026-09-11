@@ -143,8 +143,7 @@ In compliance with the hackathon rules, the following AI tools and models were u
    * Autonomous agent environment used for project orchestration, code authoring, responsive layout verification, and stress-test hardening.
 2. **Gemini 3.8 Flash (High)**:
    * Foundation model powering code generation, architecture planning, and debugging through Google Antigravity.
-3. **Hugging Face Inference API**:
-   * Model: `google/vit-base-patch16-224` (Vision Transformer for zero-shot image classification and auto-tag suggestions).
+   
 
 ---
 

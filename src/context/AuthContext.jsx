@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 const AUTH_STORAGE_KEY = 'campus_lost_found_staff_auth';
 const VALID_STAFF_CODE = 'STAFF2026';

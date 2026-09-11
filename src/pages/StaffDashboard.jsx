@@ -127,6 +127,7 @@ export default function StaffDashboard() {
     setPhotoFileName(file.name);
     setIsCompressing(true);
     setAiTagStatus({ loading: true });
+    setFormErrors((prev) => ({ ...prev, photo: undefined }));
     try {
       const compressedData = await compressImage(file);
       setPhotoUrl(compressedData);
@@ -160,9 +161,15 @@ export default function StaffDashboard() {
           });
         });
     } catch (err) {
-      alert(`Image processing failed: ${err.message}`);
+      setFormErrors((prev) => ({
+        ...prev,
+        photo: err.message || 'Image processing failed',
+      }));
       setIsCompressing(false);
       setAiTagStatus(null);
+      setPhotoUrl('');
+      setPhotoFileName('');
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -170,6 +177,7 @@ export default function StaffDashboard() {
     setPhotoUrl('');
     setPhotoFileName('');
     setAiTagStatus(null);
+    setFormErrors((prev) => ({ ...prev, photo: undefined }));
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -178,10 +186,16 @@ export default function StaffDashboard() {
     const errors = {};
     if (!description.trim()) {
       errors.description = 'Description is required';
+    } else if (description.length > 2000) {
+      errors.description = `Description exceeds maximum limit of 2,000 characters (currently ${description.length} chars). Please shorten it.`;
     }
+
     if (!location.trim()) {
       errors.location = 'Location found is required';
+    } else if (location.length > 200) {
+      errors.location = `Location cannot exceed 200 characters (currently ${location.length} chars).`;
     }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -242,7 +256,7 @@ export default function StaffDashboard() {
     }
   };
 
-  // Mark Item Collected
+  // Mark Item Collected with concurrent multi-tab resilience
   const handleMarkCollected = async (item) => {
     if (updatingId) return;
     setUpdatingId(item.id);
@@ -251,13 +265,19 @@ export default function StaffDashboard() {
       // Remove from active available list immediately
       setItems((prev) => prev.filter((i) => i.id !== item.id));
     } catch (err) {
-      alert(`Failed to update item: ${err.message}`);
+      if (err.message && err.message.includes('404')) {
+        // Item was already deleted or moved in another tab/session - self heal list
+        setItems((prev) => prev.filter((i) => i.id !== item.id));
+        alert('This item was already modified or removed in another session.');
+      } else {
+        alert(`Failed to update item: ${err.message}`);
+      }
     } finally {
       setUpdatingId(null);
     }
   };
 
-  // Confirm Delete
+  // Confirm Delete with concurrent multi-tab resilience
   const confirmDelete = async () => {
     if (!itemToDelete || isDeleting) return;
     setIsDeleting(true);
@@ -266,7 +286,14 @@ export default function StaffDashboard() {
       setItems((prev) => prev.filter((i) => i.id !== itemToDelete.id));
       setItemToDelete(null);
     } catch (err) {
-      alert(`Failed to delete item: ${err.message}`);
+      if (err.message && err.message.includes('404')) {
+        // Item was already deleted in another tab/session - self heal list
+        setItems((prev) => prev.filter((i) => i.id !== itemToDelete.id));
+        setItemToDelete(null);
+        alert('This item was already deleted in another session.');
+      } else {
+        alert(`Failed to delete item: ${err.message}`);
+      }
     } finally {
       setIsDeleting(false);
     }
@@ -383,6 +410,7 @@ export default function StaffDashboard() {
                 <input
                   id="itemLocation"
                   type="text"
+                  dir="auto"
                   value={location}
                   onChange={(e) => {
                     setLocation(e.target.value);
@@ -410,13 +438,22 @@ export default function StaffDashboard() {
                   <label className="label-text font-semibold text-sm" htmlFor="itemDescription">
                     Description <span className="text-error">*</span>
                   </label>
-                  <span className={`text-[11px] font-mono ${description.length > 400 ? 'text-warning font-bold' : 'text-base-content/50'}`}>
-                    {description.length} chars
+                  <span
+                    className={`text-[11px] font-mono ${
+                      description.length > 2000
+                        ? 'text-error font-bold'
+                        : description.length > 400
+                        ? 'text-warning font-semibold'
+                        : 'text-base-content/50'
+                    }`}
+                  >
+                    {description.length} / 2,000 chars
                   </span>
                 </div>
                 <textarea
                   id="itemDescription"
                   rows={3}
+                  dir="auto"
                   value={description}
                   onChange={(e) => {
                     setDescription(e.target.value);
@@ -437,7 +474,7 @@ export default function StaffDashboard() {
                     <span className="label-text-alt text-error font-medium">{formErrors.description}</span>
                   </label>
                 )}
-                {description.length > 400 && (
+                {description.length > 400 && description.length <= 2000 && (
                   <label className="label pt-0.5">
                     <span className="label-text-alt text-base-content/60 text-[11px]">
                       Note: Long descriptions wrap gracefully across card views and search previews.
@@ -560,6 +597,13 @@ export default function StaffDashboard() {
                       )}
                     </label>
                   )}
+                  {formErrors.photo && (
+                    <label className="label pt-1">
+                      <span className="label-text-alt text-error font-medium">
+                        {formErrors.photo}
+                      </span>
+                    </label>
+                  )}
                 </div>
               </div>
 
@@ -678,7 +722,8 @@ export default function StaffDashboard() {
                       </div>
 
                       <p
-                        className="text-sm font-semibold text-base-content leading-snug break-words"
+                        className="text-sm font-semibold text-base-content leading-snug break-words max-h-24 overflow-y-auto"
+                        dir="auto"
                         style={{ wordBreak: 'break-word' }}
                       >
                         {item.description}

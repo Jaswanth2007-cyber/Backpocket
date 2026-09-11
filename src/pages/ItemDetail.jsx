@@ -4,8 +4,6 @@ import {
   ArrowLeft,
   MapPin,
   Calendar,
-  ShieldCheck,
-  HelpCircle,
   Building,
   Image as ImageIcon,
   AlertCircle,
@@ -13,7 +11,6 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import CategoryBadge from '../components/CategoryBadge';
-import LoadingSkeleton from '../components/LoadingSkeleton';
 import ErrorMessage from '../components/ErrorMessage';
 
 export default function ItemDetail() {
@@ -151,7 +148,8 @@ export default function ItemDetail() {
                 Item Description
               </h2>
               <p
-                className="text-base sm:text-lg text-base-content leading-relaxed whitespace-pre-wrap break-words"
+                className="text-base sm:text-lg text-base-content leading-relaxed whitespace-pre-wrap break-words max-h-[480px] overflow-y-auto"
+                dir="auto"
                 style={{ wordBreak: 'break-word' }}
               >
                 {item.description}
@@ -166,7 +164,7 @@ export default function ItemDetail() {
                 </div>
                 <div>
                   <span className="text-xs text-base-content/60 block font-medium">Found At Location</span>
-                  <span className="text-sm font-semibold text-base-content break-words">{item.location}</span>
+                  <span className="text-sm font-semibold text-base-content break-words" dir="auto">{item.location}</span>
                 </div>
               </div>
 
