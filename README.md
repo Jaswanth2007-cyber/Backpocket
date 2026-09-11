@@ -2,7 +2,6 @@
 
 An accessible, mobile-first **Lost & Found** web application built for university campuses. Designed to bridge the gap between campus desk officers and students, allowing staff to catalog newly turned-in property and enabling students to search, filter, and reclaim misplaced belongings.
 
-Built for a 4h45m hackathon under strict mobile-first and data-resilience requirements.
 
 ---
 
