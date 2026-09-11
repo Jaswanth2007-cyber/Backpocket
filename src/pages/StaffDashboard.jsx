@@ -264,6 +264,7 @@ export default function StaffDashboard() {
       await api.updateItem(item.id, { status: 'collected' });
       // Remove from active available list immediately
       setItems((prev) => prev.filter((i) => i.id !== item.id));
+      alert(`"${item.description.slice(0, 40)}..." marked as collected.`);
     } catch (err) {
       if (err.message && err.message.includes('404')) {
         // Item was already deleted or moved in another tab/session - self heal list
