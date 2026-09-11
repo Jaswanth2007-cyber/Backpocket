@@ -144,15 +144,3 @@ In compliance with the hackathon rules, the following AI tools and models were u
    * Foundation model powering code generation, architecture planning, and debugging through Google Antigravity.
    
 
----
-
-## 📖 Team Code-Ownership Review Guide
-
-*(Spend 5–10 minutes reviewing these 4 core files before judge evaluation)*
-
-| File | Purpose | Key Logic to Explain to Judges |
-| :--- | :--- | :--- |
-| **`src/pages/StaffDashboard.jsx`** | Add Item Form & Inventory | Explain the client-side image compression (`imageCompressor`), the two-tier double-click guard (`lastSubmitTimeRef` + `isSubmitting`), inline validation, and the `sessionStorage` draft auto-save. |
-| **`src/pages/Search.jsx`** | Public Search & Filter | Explain how `useMemo` filters against both `description` and `location`, how filters sync with URL search params and `localStorage`, and the two distinct empty states (zero search matches vs. empty database). |
-| **`src/context/AuthContext.jsx`** | Staff Authentication | Explain the `localStorage` session flag (`campus_lost_found_staff_auth`), the code validation (`STAFF2026`), and how `<ProtectedRoute>` prevents unauthorized route visits. |
-| **`src/services/api.js`** | API Client | Explain the real async `fetch()` wrapper, HTTP error status code translation, and the three-state loading/error/empty contract enforced across all screens. |
